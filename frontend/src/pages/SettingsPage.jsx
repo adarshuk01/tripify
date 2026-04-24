@@ -4,7 +4,7 @@ import {
   HiCreditCard, HiLink, HiColorSwatch, HiChartBar,
   HiQuestionMarkCircle, HiViewGrid
 } from 'react-icons/hi';
-import { MdStar } from 'react-icons/md';
+import { MdStar, MdAdminPanelSettings } from 'react-icons/md';
 import useAuthStore from '../store/authStore';
 import useThemeStore from '../store/themeStore';
 import TripifyLogo from '../components/common/TripifyLogo';
@@ -26,6 +26,8 @@ export default function SettingsPage() {
   const { user, logout } = useAuthStore();
   const { isDark, toggle } = useThemeStore();
 
+  const isAdmin = user?.role === 'admin';
+
   return (
     <div className="page-container">
       {/* Header */}
@@ -33,6 +35,25 @@ export default function SettingsPage() {
         <TripifyLogo size={28} />
         <h1 className="font-display font-bold text-2xl text-gray-900 dark:text-white">Settings</h1>
       </div>
+
+      {/* Admin panel banner — only visible to admins */}
+      {isAdmin && (
+        <button
+          onClick={() => navigate('/admin')}
+          className="w-full mb-4 bg-purple-600 hover:bg-purple-700 rounded-2xl p-4 flex items-center justify-between transition-colors shadow-lg shadow-purple-500/25 overflow-hidden relative">
+          <div className="absolute -left-4 -top-4 w-20 h-20 rounded-full bg-white/10" />
+          <div className="flex items-center gap-3 relative z-10">
+            <div className="w-11 h-11 rounded-full bg-white flex items-center justify-center shadow-md flex-shrink-0">
+              <MdAdminPanelSettings className="w-7 h-7 text-purple-600" />
+            </div>
+            <div className="text-left">
+              <p className="font-display font-bold text-white text-sm leading-tight">Admin Panel</p>
+              <p className="text-purple-200 text-xs mt-0.5">Manage users and roles</p>
+            </div>
+          </div>
+          <HiChevronRight className="w-5 h-5 text-white/70 flex-shrink-0 relative z-10" />
+        </button>
+      )}
 
       {/* Upgrade banner */}
       <div className="bg-primary-500 rounded-2xl p-4 mb-6 flex items-center justify-between cursor-pointer hover:bg-primary-600 transition-colors shadow-lg shadow-primary-500/25 overflow-hidden relative">

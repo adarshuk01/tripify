@@ -1,25 +1,17 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { HiHome, HiBookmark, HiCog } from 'react-icons/hi';
-import { MdAddCircle } from 'react-icons/md';
-import useAuthStore from '../../store/authStore';
+import { MdCardTravel, MdAddCircle } from 'react-icons/md';
 
 const navItems = [
-  { to: '/',        icon: HiHome,     label: 'Home'    },
-  { to: '/saved',   icon: HiBookmark, label: 'Saved'   },
-  { to: '/planner', icon: null,       label: 'Plan', isCenter: true },
-  { to: '/settings',icon: HiCog,      label: 'Settings'},
+  { to: '/',        icon: HiHome,       label: 'Home'     },
+  { to: '/saved',   icon: HiBookmark,   label: 'Saved'    },
+  { to: '/planner', icon: null,         label: 'Plan', isCenter: true },
+  { to: '/trips',   icon: MdCardTravel, label: 'My Trips' },
+  { to: '/settings',icon: HiCog,       label: 'Settings' },
 ];
 
 export default function BottomNav() {
   const navigate = useNavigate();
-  const { token } = useAuthStore();
-
-  const handleSaved = (e) => {
-    if (!token) {
-      e.preventDefault();
-      navigate('/login');
-    }
-  };
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-tripify-card border-t border-gray-100 dark:border-gray-800">
@@ -37,8 +29,7 @@ export default function BottomNav() {
             );
           }
           return (
-            <NavLink key={to + label} to={to} end={to === '/'}
-              onClick={to === '/saved' ? handleSaved : undefined}
+            <NavLink key={to} to={to} end={to === '/'}
               className={({ isActive }) =>
                 `flex flex-col items-center gap-1 px-3 py-1 rounded-xl transition-colors ${
                   isActive ? 'text-primary-500' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'

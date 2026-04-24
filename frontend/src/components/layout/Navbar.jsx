@@ -5,16 +5,17 @@ import useAuthStore from '../../store/authStore';
 import TripifyLogo from '../common/TripifyLogo';
 
 const titles = {
-  '/': 'Tripify',
-  '/planner': 'Plan Trip',
-  '/saved': 'Saved Trips',
+  '/':         'Tripify',
+  '/planner':  'Plan Trip',
+  '/trips':    'My Trips',
+  '/saved':    'Saved Trips',
   '/settings': 'Settings',
-  '/profile': 'Personal Info',
+  '/profile':  'Personal Info',
 };
 
 export default function Navbar() {
   const { isDark, toggle } = useThemeStore();
-  const { user, token } = useAuthStore();
+  const { user } = useAuthStore();
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
@@ -39,21 +40,13 @@ export default function Navbar() {
           <button onClick={toggle} className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" aria-label="Toggle theme">
             {isDark ? <HiSun className="w-5 h-5 text-yellow-400" /> : <HiMoon className="w-5 h-5 text-gray-600" />}
           </button>
-
-          {token && user ? (
+          {user && (
             <button
               onClick={() => navigate('/profile')}
               className="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center text-white text-sm font-bold hover:bg-primary-600 transition-colors"
             >
               {user.name?.charAt(0).toUpperCase()}
             </button>
-          ) : (
-            <Link
-              to="/login"
-              className="text-xs font-bold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/30 px-3 py-1.5 rounded-xl hover:bg-primary-100 dark:hover:bg-primary-900/50 transition-colors"
-            >
-              Sign In
-            </Link>
           )}
         </div>
       </div>

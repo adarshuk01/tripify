@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { HiSearch, HiPlus } from 'react-icons/hi';
+import { HiSearch, HiPlus, HiBookmark, HiOutlineBookmark, HiTrash } from 'react-icons/hi';
 import { tripService } from '../services/tripService';
 import TripCard from '../components/trips/TripCard';
 import { SkeletonCard } from '../components/common/Loader';
 import Modal from '../components/common/Modal';
 
-export default function SavedTripsPage() {
+export default function MyTripsPage() {
   const navigate = useNavigate();
   const [trips, setTrips] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,11 +19,11 @@ export default function SavedTripsPage() {
   const fetchTrips = async () => {
     try {
       setLoading(true);
-      // Only trips the user has bookmarked
-      const { data } = await tripService.getSaved();
+      // All trips — no saved filter
+      const { data } = await tripService.getAll();
       setTrips(data.data || []);
     } catch {
-      setError('Failed to load saved trips.');
+      setError('Failed to load trips.');
     } finally {
       setLoading(false);
     }
@@ -41,9 +41,9 @@ export default function SavedTripsPage() {
     }
   };
 
-  // When unsaved from this page, remove from list
+  // When user toggles save on a card, update isSaved in local state
   const handleSaveToggle = (id, isSaved) => {
-    if (!isSaved) setTrips((prev) => prev.filter((t) => t._id !== id));
+    setTrips((prev) => prev.map((t) => t._id === id ? { ...t, isSaved } : t));
   };
 
   const filtered = trips.filter((t) =>
@@ -55,10 +55,10 @@ export default function SavedTripsPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="font-display font-bold text-2xl text-gray-900 dark:text-white">
-            Saved Trips
+            My Trips
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-            {trips.length} trip{trips.length !== 1 ? 's' : ''} saved
+            {trips.length} trip{trips.length !== 1 ? 's' : ''} generated
           </p>
         </div>
         <button onClick={() => navigate('/planner')} className="btn-primary py-2 px-4 text-sm">
@@ -96,15 +96,15 @@ export default function SavedTripsPage() {
         </div>
       ) : trips.length === 0 ? (
         <div className="card p-10 text-center animate-fade-in">
-          <span className="text-5xl">🔖</span>
+          <span className="text-5xl">🗺️</span>
           <h3 className="font-display font-bold text-xl text-gray-900 dark:text-white mt-4">
-            No saved trips yet
+            No trips yet
           </h3>
           <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 mb-6">
-            Tap the bookmark icon on any trip to save it here
+            Plan your first adventure with AI
           </p>
-          <button onClick={() => navigate('/trips')} className="btn-primary mx-auto">
-            View All Trips
+          <button onClick={() => navigate('/planner')} className="btn-primary mx-auto">
+            Plan a Trip
           </button>
         </div>
       ) : (

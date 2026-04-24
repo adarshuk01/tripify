@@ -8,7 +8,6 @@ import StepDestination from '../components/planner/StepDestination';
 import StepPreferences from '../components/planner/StepPreferences';
 import StepBudget from '../components/planner/StepBudget';
 import StepReview from '../components/planner/StepReview';
-import useAuthStore from '../store/authStore';
 
 const STEPS = ['Traveler', 'Destination', 'Preferences', 'Budget', 'Review'];
 
@@ -29,7 +28,6 @@ const defaultForm = {
 
 export default function PlannerPage() {
   const navigate = useNavigate();
-  const { token } = useAuthStore();
   const [searchParams] = useSearchParams();
   const [step, setStep] = useState(0);
   const [form, setForm] = useState(defaultForm);
@@ -76,12 +74,6 @@ export default function PlannerPage() {
   };
 
   const handleGenerate = async () => {
-    // Redirect to login if not authenticated
-    if (!token) {
-      navigate('/login', { state: { from: '/planner', message: 'Please sign in to generate your itinerary' } });
-      return;
-    }
-
     setGenerating(true);
     setProgress(10);
     setError('');
@@ -173,20 +165,13 @@ export default function PlannerPage() {
             <HiArrowRight className="w-4 h-4" />
           </button>
         ) : (
-          <div>
-            <button
-              onClick={handleGenerate}
-              disabled={generating}
-              className="btn-primary w-full text-base py-4"
-            >
-              🪄 Build My Itinerary
-            </button>
-            {!token && (
-              <p className="text-center text-xs text-gray-400 dark:text-gray-500 mt-3">
-                You'll be asked to sign in before generating
-              </p>
-            )}
-          </div>
+          <button
+            onClick={handleGenerate}
+            disabled={generating}
+            className="btn-primary w-full text-base py-4"
+          >
+            🪄 Build My Itinerary
+          </button>
         )}
       </div>
     </div>

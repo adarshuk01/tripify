@@ -153,7 +153,7 @@ export default function HomePage() {
           </h2>
           {recentTrips.length > 0 && (
             <button
-              onClick={() => navigate('/saved')}
+              onClick={() => navigate('/trips')}
               className="text-sm text-primary-600 dark:text-primary-400 font-semibold flex items-center gap-1"
             >
               See All <HiArrowRight className="w-3 h-3" />
@@ -168,7 +168,7 @@ export default function HomePage() {
         ) : recentTrips.length > 0 ? (
           <div className="space-y-3">
             {recentTrips.map((trip) => (
-              <TripCard key={trip._id} trip={trip} onDelete={handleDeleteTrip} />
+              <TripCard key={trip._id} trip={trip} onDelete={handleDeleteTrip} onSaveToggle={(id, isSaved) => setRecentTrips((prev) => prev.map((t) => t._id === id ? { ...t, isSaved } : t))} />
             ))}
           </div>
         ) : (

@@ -17,7 +17,6 @@ const useAuthStore = create(
         set({ isLoading: true, error: null });
         try {
           const { data } = await api.post('/auth/login', { email, password });
-          api.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
           set({ user: data.user, token: data.token, isLoading: false });
           return { success: true };
         } catch (err) {
@@ -31,7 +30,6 @@ const useAuthStore = create(
         set({ isLoading: true, error: null });
         try {
           const { data } = await api.post('/auth/register', { name, email, password });
-          api.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
           set({ user: data.user, token: data.token, isLoading: false });
           return { success: true };
         } catch (err) {
@@ -42,16 +40,12 @@ const useAuthStore = create(
       },
 
       logout: () => {
-        delete api.defaults.headers.common['Authorization'];
         set({ user: null, token: null, error: null });
       },
 
-      initAuth: () => {
-        const { token } = get();
-        if (token) {
-          api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        }
-      },
+      // initAuth is now a no-op; token is read from persisted storage by the
+      // axios interceptor on every request automatically.
+      initAuth: () => {},
     }),
     {
       name: 'tripify-auth',

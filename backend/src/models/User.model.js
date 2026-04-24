@@ -22,11 +22,17 @@ const userSchema = new mongoose.Schema({
     minlength: [6, 'Password must be at least 6 characters'],
     select: false,
   },
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user',
+  },
   phone: { type: String, default: '' },
   country: { type: String, default: '' },
   gender: { type: String, enum: ['Male', 'Female', 'Other', ''], default: '' },
   avatar: { type: String, default: '' },
   travelPreferences: [{ type: String }],
+  isActive: { type: Boolean, default: true },
   createdAt: { type: Date, default: Date.now },
 });
 

@@ -8,20 +8,27 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import PlannerPage from './pages/PlannerPage';
 import ItineraryPage from './pages/ItineraryPage';
+import MyTripsPage from './pages/MyTripsPage';
 import SavedTripsPage from './pages/SavedTripsPage';
 import SettingsPage from './pages/SettingsPage';
 import ProfilePage from './pages/ProfilePage';
+import AdminPage from './pages/AdminPage';
 
-// Only blocks access if not logged in
 const ProtectedRoute = ({ children }) => {
   const { token } = useAuthStore();
   return token ? children : <Navigate to="/login" replace />;
 };
 
-// Redirects logged-in users away from auth pages
 const AuthRoute = ({ children }) => {
   const { token } = useAuthStore();
   return !token ? children : <Navigate to="/" replace />;
+};
+
+const AdminRoute = ({ children }) => {
+  const { token, user } = useAuthStore();
+  if (!token) return <Navigate to="/login" replace />;
+  if (user?.role !== 'admin') return <Navigate to="/" replace />;
+  return children;
 };
 
 export default function App() {
@@ -36,17 +43,17 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<AuthRoute><LoginPage /></AuthRoute>} />
+        <Route path="/login"    element={<AuthRoute><LoginPage /></AuthRoute>} />
         <Route path="/register" element={<AuthRoute><RegisterPage /></AuthRoute>} />
-        <Route path="/" element={<Layout />}>
-          {/* Public routes - accessible without login */}
+        <Route path="/admin"    element={<AdminRoute><AdminPage /></AdminRoute>} />
+        <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
           <Route index element={<HomePage />} />
-          <Route path="planner" element={<PlannerPage />} />
-          {/* Protected routes - require login */}
-          <Route path="itinerary/:id" element={<ProtectedRoute><ItineraryPage /></ProtectedRoute>} />
-          <Route path="saved" element={<ProtectedRoute><SavedTripsPage /></ProtectedRoute>} />
-          <Route path="settings" element={<SettingsPage />} />
-          <Route path="profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+          <Route path="planner"       element={<PlannerPage />} />
+          <Route path="itinerary/:id" element={<ItineraryPage />} />
+          <Route path="trips"         element={<MyTripsPage />} />
+          <Route path="saved"         element={<SavedTripsPage />} />
+          <Route path="settings"      element={<SettingsPage />} />
+          <Route path="profile"       element={<ProfilePage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
