@@ -1,3 +1,7 @@
-import app from "../src/app";
+const app = require("../src/app");
+const connectDB = require("../src/config/database");
 
-export default app;
+module.exports = async (req, res) => {
+  await connectDB(); // ✅ ensure DB connection
+  return app(req, res);
+};
